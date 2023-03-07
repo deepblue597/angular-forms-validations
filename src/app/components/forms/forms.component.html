@@ -1,0 +1,37 @@
+<div class="title">
+  <h1>form tester</h1>
+</div>
+
+<h1>{{ this.registrationForm.value | json }}</h1>
+
+<form [formGroup]="registrationForm">
+  <mat-form-field appearance="fill">
+    <mat-label> Name</mat-label>
+    <input matInput type="text" placeholder="Jason" formControlName="name" />
+  </mat-form-field>
+
+  <mat-form-field appearance="fill">
+    <mat-label> Surname</mat-label>
+    <input
+      matInput
+      type="text"
+      placeholder="Kakandris"
+      formControlName="surname"
+    />
+  </mat-form-field>
+
+  <mat-form-field appearance="fill">
+    <mat-label> email</mat-label>
+    <input
+      matInput
+      type="email"
+      placeholder="example@gmail.com"
+      formControlName="email"
+    />
+  </mat-form-field>
+
+  <mat-form-field appearance="fill">
+    <mat-label> Adress</mat-label>
+    <input matInput type="text" placeholder="Jason" formControlName="address" />
+  </mat-form-field>
+</form>
