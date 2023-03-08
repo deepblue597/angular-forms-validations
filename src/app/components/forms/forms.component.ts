@@ -1,5 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
+import {
+  forbiddenNameValidator,
+  passwordValidator,
+} from 'src/app/validators/form-validators';
 
 @Component({
   selector: 'app-forms',
@@ -9,16 +13,28 @@ import { FormBuilder, Validators } from '@angular/forms';
 export class FormsComponent implements OnInit {
   constructor(private fb: FormBuilder) {}
 
-  registrationForm = this.fb.group({
-    name: ['', [Validators.required, Validators.minLength(3)]],
-    surname: [''],
-    email: [''],
-    address: this.fb.group({
-      city: [''],
-      addressName: [''],
-      postalCode: [''],
-    }),
-  });
+  registrationForm = this.fb.group(
+    {
+      name: [
+        '',
+        [
+          Validators.required,
+          Validators.minLength(3),
+          forbiddenNameValidator(/admin/), //in angular doc it says /admin/i but i dont see any difference
+        ],
+      ],
+      surname: [''],
+      email: [''],
+      password: [''],
+      confirm: [''],
+      address: this.fb.group({
+        city: [''],
+        addressName: [''],
+        postalCode: [''],
+      }),
+    },
+    { validator: [passwordValidator()] }
+  );
 
   ngOnInit(): void {}
 
