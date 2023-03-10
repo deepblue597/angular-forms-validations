@@ -79,6 +79,7 @@ export class FormsComponent implements OnInit {
       surname: 'kakandris',
       email: 'example@gmail.com',
       subscribe: false,
+      numberOfEmails: 0,
       password: '123',
       confirm: '123',
       address: {
@@ -86,6 +87,7 @@ export class FormsComponent implements OnInit {
         addressName: 'skaltsouni',
         postalCode: '54637',
       },
+      alternateEmails: [],
     });
   }
   loadName() {
