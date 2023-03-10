@@ -29,6 +29,7 @@ export class FormsComponent implements OnInit {
         surname: [''],
         email: [''],
         subscribe: [false],
+        numberOfEmails: [0],
         password: [''],
         confirm: [''],
         address: this.fb.group({
@@ -111,6 +112,13 @@ export class FormsComponent implements OnInit {
   }
 
   addAlternateEmails() {
-    this.alternateEmails.push(this.fb.control('')); // pushes more items to formbuilder
+    const number = this.registrationForm.get('numberOfEmails')?.value;
+    for (let i = 0; i < number; i++) {
+      this.alternateEmails.push(this.fb.control('')); // pushes more items to formbuilder
+    }
+  }
+
+  onSubmit() {
+    console.log(this.registrationForm.value);
   }
 }
