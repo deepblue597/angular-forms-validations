@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, Validators } from '@angular/forms';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
 import {
   forbiddenNameValidator,
   passwordValidator,
@@ -11,32 +11,65 @@ import {
   styleUrls: ['./forms.component.scss'],
 })
 export class FormsComponent implements OnInit {
-  constructor(private fb: FormBuilder) {}
+  constructor(private fb: FormBuilder, private cdRef: ChangeDetectorRef) {}
 
-  registrationForm = this.fb.group(
-    {
-      name: [
-        '',
-        [
-          Validators.required,
-          Validators.minLength(3),
-          forbiddenNameValidator(/admin/), //in angular doc it says /admin/i but i dont see any difference
+  registrationForm!: FormGroup;
+
+  ngOnInit(): void {
+    this.registrationForm = this.fb.group(
+      {
+        name: [
+          '',
+          [
+            Validators.required,
+            Validators.minLength(3),
+            forbiddenNameValidator(/admin/), //in angular doc it says /admin/i but i dont see any difference
+          ],
         ],
-      ],
-      surname: [''],
-      email: [''],
-      password: [''],
-      confirm: [''],
-      address: this.fb.group({
-        city: [''],
-        addressName: [''],
-        postalCode: [''],
-      }),
-    },
-    { validator: [passwordValidator()] }
-  );
+        surname: [''],
+        email: [''],
+        subscribe: [false],
+        password: [''],
+        confirm: [''],
+        address: this.fb.group({
+          city: [''],
+          addressName: [''],
+          postalCode: [''],
+        }),
+        alternateEmails: this.fb.array([]),
+      },
+      { validator: [passwordValidator()] }
+    );
 
-  ngOnInit(): void {}
+    // we check if the subsicribe is checked then email is required
+    // the valueChanges returns an observable so we subscribe to it
+    this.registrationForm
+      .get('subscribe')
+      ?.valueChanges.subscribe((checkedValue) => {
+        const email = this.registrationForm.get('email');
+        if (checkedValue) {
+          email?.setValidators(Validators.required);
+        } else {
+          email?.clearValidators();
+        }
+        email?.updateValueAndValidity();
+      });
+
+    // adds the required method to eaxh alternate Email
+    // need to uncheck and recheck the checkbox in order to work
+    this.registrationForm
+      .get('subscribe')
+      ?.valueChanges.subscribe((checkedValue) => {
+        this.alternateEmails.controls.forEach((element) => {
+          if (checkedValue) {
+            element.setValidators(Validators.required);
+          } else {
+            element.clearValidators();
+          }
+          element.updateValueAndValidity();
+        });
+      });
+  }
 
   loadData() {
     this.registrationForm.setValue({
@@ -44,6 +77,9 @@ export class FormsComponent implements OnInit {
       name: 'jason',
       surname: 'kakandris',
       email: 'example@gmail.com',
+      subscribe: false,
+      password: '123',
+      confirm: '123',
       address: {
         city: 'thessaloniki',
         addressName: 'skaltsouni',
@@ -63,5 +99,18 @@ export class FormsComponent implements OnInit {
   get name() {
     //getting the validation without writing this in html every time
     return this.registrationForm.get('name');
+  }
+
+  get email() {
+    //getting the validation without writing this in html every time
+    return this.registrationForm.get('email');
+  }
+
+  get alternateEmails() {
+    return this.registrationForm.get('alternateEmails') as FormArray;
+  }
+
+  addAlternateEmails() {
+    this.alternateEmails.push(this.fb.control('')); // pushes more items to formbuilder
   }
 }
