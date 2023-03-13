@@ -84,7 +84,7 @@ export class FormsComponent implements OnInit {
       confirm: '123',
       address: {
         city: 'thessaloniki',
-        addressName: 'skaltsouni',
+        addressName: 'tsimiski',
         postalCode: '54637',
       },
       alternateEmails: [],
@@ -118,6 +118,9 @@ export class FormsComponent implements OnInit {
     for (let i = 0; i < number; i++) {
       this.alternateEmails.push(this.fb.control('')); // pushes more items to formbuilder
     }
+    this.alternateEmails.controls.forEach((element) => {
+      element.setValidators(Validators.email);
+    });
   }
 
   onSubmit() {
